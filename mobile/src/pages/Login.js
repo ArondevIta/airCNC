@@ -1,15 +1,24 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { View, AsyncStorage, KeyboardAvoidingView, Platform, Text, TextInput, Image, StyleSheet, TouchableOpacity }  from 'react-native'
 
 import api from '../services/api'
 
 import logo from '../assets/logo.png'
 
-export default function Login(){
+export default function Login({ navigation }){
   const [email, setEmail] = useState('')
   const [techs, setTechs] = useState('')
 
-  async function handleSubmit({ navigation }){
+  useEffect(()=> {
+    AsyncStorage.getItem('user').then(user =>{
+      if(user){
+        navigation.navigate('List')
+        console.log(user)
+      }
+    })
+  }, [])
+
+  async function handleSubmit(){
     const response = await api.post('/sessions', {
       email
     })
@@ -52,7 +61,7 @@ export default function Login(){
           onChangeText={setTechs}
         />
 
-      <TouchableOpacity onPress={handleSubmit} style={styles.button}>
+      <TouchableOpacity onPress={(handleSubmit)} style={styles.button}>
         <Text style={styles.buttonText}>Encontrar spots</Text>
       </TouchableOpacity>
       </View> 
